@@ -1,4 +1,6 @@
-"""ICT336 workshop: a savings website with 2 ML models (Kaggle data).
+"""STARTER FILE: fill in TODO 1-3, then rename to app.py (or copy into app.py).
+
+ICT336 workshop: a savings website with 2 ML models (Kaggle data).
 
 Tab 1  Fixed deposit -> supervised model (classification) predicts if a customer will open a fixed deposit
 Tab 2  Saver group   -> unsupervised model (K-Means)       finds which group of customers a person is like
@@ -20,8 +22,9 @@ st.caption("ICT336 workshop. Data from Kaggle, for teaching only, not financial 
 # ---------- STEP 2: load the saved models (only once) and make tabs ----------
 @st.cache_resource
 def load_models():
-    savings = joblib.load("savings_model.joblib")
-    saver = joblib.load("saver_model.joblib")
+    # TODO 1: load "savings_model.joblib" and "saver_model.joblib" with joblib.load
+    savings = None
+    saver = None
     return savings, saver
 
 
@@ -32,6 +35,9 @@ def load_customers():
 
 savings, saver = load_models()
 customers = load_customers()
+if savings is None or saver is None:
+    st.info("Models not loaded yet: finish TODO 1.")
+    st.stop()
 
 tab_deposit, tab_group, tab_about = st.tabs(["🏦 Fixed deposit", "👥 Saver group", "ℹ️ About the models"])
 
@@ -62,7 +68,9 @@ with tab_deposit:
         "housing": housing, "loan": loan, "poutcome": poutcome}])
 
     if st.button("Predict", type="primary"):
-        chance = savings["model"].predict_proba(customer[savings["features"]])[0, 1]
+        # TODO 2: use savings["model"].predict_proba(...) on customer[savings["features"]]
+        #         and take [0, 1] = the chance of "yes" for our one customer
+        chance = 0.0
         st.metric("Chance of opening a fixed deposit", f"{chance * 100:.0f}%")
         st.progress(float(chance))
         if chance >= 0.7:
@@ -84,7 +92,8 @@ with tab_group:
     person = pd.DataFrame([{"Annual Income (k$)": income, "Spending Score (1-100)": spending}])
 
     if st.button("Find group", type="primary"):
-        group = int(saver["model"].predict(person[saver["features"]])[0])
+        # TODO 3: use saver["model"].predict(...) on person[saver["features"]] and take [0]
+        group = 0
         st.success(f"This person is in group {group}: **{saver['names'][group]}**")
         st.info(f"Savings tip: {saver['tips'][group]}")
 
